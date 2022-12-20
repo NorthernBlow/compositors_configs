@@ -46,7 +46,10 @@ output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 
 #######//////// WAYBAR \\\\\\\#########
 
-exec waybar
+
+bar {
+  swaybar_command waybar
+}
 
 #######//////// Take a screenshot #########
 
@@ -120,7 +123,7 @@ bindsym Print exec grim -g "$(slurp)" - | wl-copy
 
 
     focus_follows_mouse no
-    default_border pixel 1
+    default_border pixel 5
     hide_edge_borders smart
 
 
@@ -232,18 +235,18 @@ bindsym $mod+r mode "resize"
 # Status Bar:
 #
 # Read `man 5 sway-bar` for more information about this section.
-bar {
-    position top
-
-    # When the status_command prints a new line to stdout, swaybar updates.
-    # The default just shows the current date and time.
-    status_command while date +'%Y-%m-%d %I:%M:%S %p'; do sleep 1; done
-
-    colors {
-        statusline #ffffff
-        background #323232
-        inactive_workspace #32323200 #32323200 #5c5c5c
-    }
-}
+#bar {
+#    position top
+#
+#    # When the status_command prints a new line to #stdout, swaybar updates.
+#    # The default just shows the current date and time.
+#    status_command while date +'%Y-%m-%d %I:%M:%S %p'; #do sleep 1; done
+#
+#    colors {
+#        statusline #ffffff
+#        background #323232
+#        inactive_workspace #32323200 #32323200 #5c5c5c
+#    }
+#}
 
 include /home/northerblow/.config/sway/config.d/*
