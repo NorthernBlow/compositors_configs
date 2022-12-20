@@ -106,6 +106,16 @@ output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
     bindsym $mod+Up focus up
     bindsym $mod+Right focus right
 
+###############################
+### Moving focus with mouse
+
+
+    focus_follows_mouse no
+    default_border pixel 5
+    hide_edge_borders smart
+
+###############################
+
     # Move the focused window with the same, but add Shift
     bindsym $mod+Shift+$left move left
     bindsym $mod+Shift+$down move down
