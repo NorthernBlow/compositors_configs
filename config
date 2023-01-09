@@ -166,6 +166,8 @@ bindsym Print exec grim -g "$(slurp)" - | wl-copy
     bindsym $mod+Shift+Down move down
     bindsym $mod+Shift+Up move up
     bindsym $mod+Shift+Right move right
+
+    bindsym $mod+t border toggle
 #
 # Workspaces:
 #
