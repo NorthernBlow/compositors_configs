@@ -1,110 +1,144 @@
 // -*- mode: json -*-
 
 {
-    "layer": "top",
-    "position": "top",
-    "height": 10,
+    // "layer": "top", // Waybar at top layer
+    // "position": "bottom", // Waybar position (top|bottom|left|right)
+    // "height": 14, // Waybar height (to be removed for auto height)
+    // "width": 1280, // Waybar width
 
-    "modules-left": [
-        "sway/workspaces",
-        "custom/right-arrow-dark"
-    ],
-    "modules-center": [
-        "custom/left-arrow-dark",
-        "clock#1",
-        "custom/left-arrow-light",
-        "custom/left-arrow-dark",
-        "clock#2",
-        "custom/right-arrow-dark",
-        "custom/right-arrow-light",
-        "clock#3",
-        "custom/right-arrow-dark"
-    ],
-    "modules-right": [
-        "custom/left-arrow-dark",
-        "pulseaudio",
-        "custom/left-arrow-light",
-        "custom/left-arrow-dark",
-        "memory",
-        "custom/left-arrow-light",
-        "custom/left-arrow-dark",
-        "cpu",
-        "custom/left-arrow-light",
-        "custom/left-arrow-dark",
-        "battery",
-        "custom/left-arrow-light",
-        "custom/left-arrow-dark",
-        "disk",
-        "custom/left-arrow-light",
-        "custom/left-arrow-dark",
-        "tray"
-    ],
+    // Choose the order of the modules
+    "modules-left": ["sway/workspaces", "sway/mode"],
+    // "modules-center": ["sway/window"],
+    "modules-right": ["custom/disk_home", "custom/disk_root", "cpu", "memory", "network", "pipewire", "clock", "idle_inhibitor", "tray"],
 
-    "custom/left-arrow-dark": {
-        "format": "",
-        "tooltip": false
+    // Modules configuration
+    // "sway/workspaces": {
+    //  "disable-scroll": true,
+    //  "all-outputs": true,
+    //  "format": "{name}: {icon}",
+    //  "format-icons": {
+    //      "1": "",
+    //      "2": "",
+    //      "3": "",
+    //      "4": "",
+    //      "5": "",
+    //      "urgent": "",
+    //      "focused": "",
+    //      "default": ""
+    //  }
+    // },
+    "sway/mode": {
+        "format": "{}"
     },
-    "custom/left-arrow-light": {
-        "format": "",
-        "tooltip": false
+    "custom/arch_update": {
+        "format": "<span color='#589df6'></span>{}",
+        "interval": 30,
+        "exec": "~/.config/i3blocks/bin/arch_update.py -b '#e4e4e4' -u '#e4e4e4' -q"
     },
-    "custom/right-arrow-dark": {
-        "format": "",
-        "tooltip": false
-    },
-    "custom/right-arrow-light": {
-        "format": "",
-        "tooltip": false
-    },
-
-    "sway/workspaces": {
-        "disable-scroll": false,
-        "format": "{name}"
-    },
-
-    "clock#1": {
-        "format": "{:%a}",
-        "tooltip": false
-    },
-    "clock#2": {
-        "format": "{:%H:%M}",
-        "tooltip": false
-    },
-    "clock#3": {
-        "format": "{:%m-%d}",
-        "tooltip": false
-    },
-
-    "pipewire": {
-        "format": "{icon} {volume:2}%",
-        "format-bluetooth": "{icon}  {volume}%",
-        "format-muted": "MUTE",
-        "format-icons": {
-            "headphones": "",
-            "default": [
-                "",
-                ""
-            ]
-        },
-        "scroll-step": 5,
-        "on-click": "pamixer -t",
-        "on-click-right": "pavucontrol"
-    },
-    "memory": {
-        "interval": 5,
-        "format": "Mem {}%"
-    },
-    "cpu": {
-        "interval": 5,
-        "format": "CPU {usage:2}%"
+    "custom/disk_home": {
+        "format": "🏠 {} ",
+        "interval": 30,
+        "exec": "df -h --output=avail $HOME | tail -1 | tr -d ' '"
     },
     
-    "disk": {
-        "interval": 5,
-        "format": "Disk {percentage_used:2}%",
-        "path": "/"
+    "cpu": {
+        "format": "⚛ {usage}%",
+        "tooltip": false
+    },
+    "memory": {
+        "format": "💾 {used:0.1f}G"
+    },
+    "network": {
+        "family": "ipv6",
+        "interface": "wlan0", // (Optional) To force the use of this interface
+        "format-wifi": "<span color='#589df6'></span> <span color='gray'>{essid}</span> {frequency} <span color='#589df6'>{signaldBm} dB</span> <span color='#589df6'>⇵</span> {bandwidthUpBits}/{bandwidthDownBits}",
+        "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
+        "format-linked": "{ifname} (No IP) ",
+        "format-alt": "{ifname}: {ipaddr}/{cidr}",
+        "interval": 5
+    },
+    "backlight": {
+        // "device": "acpi_video1",
+        "format": "{icon} {percent}%",
+        "format-icons": ["🔅", "🔆"]
+    },
+    // "pipewire-pulse": {
+    //     // "scroll-step": 1, // %, can be a float
+    //     "format": "{icon} {volume}% {format_source}",
+    //     "format-muted": "🔇 {format_source}",
+    //     "format-bluetooth": "{icon} {volume}% {format_source}",
+    //     "format-bluetooth-muted": "🔇 {format_source}",
+
+    //     "format-source": " {volume}%",
+    //     "format-source-muted": "",
+
+    //     "format-icons": {
+    //         "headphones": "",
+    //         "handsfree": "",
+    //         "headset": "",
+    //         "phone": "",
+    //         "portable": "",
+    //         "car": "",
+    //         "default": ["🔈", "🔉", "🔊"]
+    //     },
+    //     "on-click": "ponymix -N -t sink toggle",
+    //     "on-click-right": "ponymix -N -t source toggle"
+    // },
+    "clock": {
+        "interval": 1,
+        "format": "⏳ {:%H:%M:%S}",
+        "tooltip-format": "{:%Y-%m-%d | %H:%M:%S}"
+        // "format-alt": "{:%Y-%m-%d}"
+    },
+    
+    "idle_inhibitor": {
+        "format": "<span color='#589df6'>{icon}</span>",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        },
+        "on-click-right": "swaylock -eFfki ~/.config/lockscreen-origin.png"
     },
     "tray": {
-        "icon-size": 20
+        // "icon-size": 21,
+        "spacing": 10
+    },
+    "custom/media": {
+        "format": "{icon} {}",
+        "return-type": "json",
+        "max-length": 40,
+        "format-icons": {
+            "spotify": "",
+            "default": "🎜"
+        },
+        "escape": true,
+        "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null" // Script in resources folder
+        // "exec": "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null" // Filter player based on name
+    },
+    "mpd": {
+        "format": "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ",
+        "format-disconnected": "Disconnected ",
+        "format-stopped": "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ",
+        "unknown-tag": "N/A",
+        "interval": 2,
+        "consume-icons": {
+            "on": " "
+        },
+        "random-icons": {
+            "off": "<span color=\"#f53c3c\"></span> ",
+            "on": " "
+        },
+        "repeat-icons": {
+            "on": " "
+        },
+        "single-icons": {
+            "on": "1 "
+        },
+        "state-icons": {
+            "paused": "",
+            "playing": ""
+        },
+        "tooltip-format": "MPD (connected)",
+        "tooltip-format-disconnected": "MPD (disconnected)"
     }
 }
