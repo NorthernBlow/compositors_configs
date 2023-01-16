@@ -9,7 +9,7 @@
     // Choose the order of the modules
     "modules-left": ["sway/workspaces", "sway/mode"],
     // "modules-center": ["sway/window"],
-    "modules-right": ["custom/disk_home", "custom/disk_root", "cpu", "memory", "network", "pipewire", "clock", "idle_inhibitor", "tray"],
+    "modules-right": ["custom/weather", "custom/disk_home", "custom/disk_root", "cpu", "memory", "network", "pipewire", "clock", "idle_inhibitor", "tray"],
 
     // Modules configuration
     // "sway/workspaces": {
@@ -27,14 +27,20 @@
     //      "default": ""
     //  }
     // },
+    
+
     "sway/mode": {
         "format": "{}"
     },
-    "custom/arch_update": {
-        "format": "<span color='#589df6'></span>{}",
-        "interval": 30,
-        "exec": "~/.config/i3blocks/bin/arch_update.py -b '#e4e4e4' -u '#e4e4e4' -q"
+
+    "custom/weather": {
+        "format": "{}",
+        "tooltip": true,
+        "interval": 3600,
+        "exec": "python ~/.config/waybar/weather.py",
+        "return-type": "json"
     },
+
     "custom/disk_home": {
         "format": "🏠 {} ",
         "interval": 30,
