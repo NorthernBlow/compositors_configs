@@ -18,8 +18,10 @@ set $term kitty
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-set $menu tofi-drun | xargs swaymsg exec --
+exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
 
+set $menu tofi-drun | xargs swaymsg exec --
+exec systemctl --user import-environment
 
 
 
@@ -111,10 +113,10 @@ bindsym Print exec grim -g "$(slurp)" - | wl-copy
     bindsym $mod+Return exec $term
 
     # Kill focused window
-    bindsym $mod+Shift+q kill
+    bindsym --to-code $mod+Shift+q kill
 
     # Start your launcher
-    bindsym $mod+d exec $menu
+    bindsym --to-code $mod+d exec $menu
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -149,6 +151,7 @@ bindsym Print exec grim -g "$(slurp)" - | wl-copy
     focus_follows_mouse no
     default_border pixel 5
     hide_edge_borders smart
+    
 
 
 
@@ -201,8 +204,8 @@ bindsym Print exec grim -g "$(slurp)" - | wl-copy
     # You can "split" the current object of your focus with
     # $mod+b or $mod+v, for horizontal and vertical splits
     # respectively.
-    bindsym $mod+b splith
-    bindsym $mod+v splitv
+    bindsym --to-code $mod+b splith
+    bindsym --to-code $mod+v splitv
 
     # Switch the current container between different layout styles
     bindsym $mod+s layout stacking
@@ -240,16 +243,16 @@ mode "resize" {
     # right will grow the containers width
     # up will shrink the containers height
     # down will grow the containers height
-    bindsym $left resize shrink width 10px
+    bindsym $left resize shrink width 20px
     bindsym $down resize grow height 10px
     bindsym $up resize shrink height 10px
-    bindsym $right resize grow width 10px
+    bindsym $right resize grow width 20px
 
     # Ditto, with arrow keys
-    bindsym Left resize shrink width 10px
+    bindsym Left resize shrink width 30px
     bindsym Down resize grow height 10px
     bindsym Up resize shrink height 10px
-    bindsym Right resize grow width 10px
+    bindsym Right resize grow width 30px
 
     # Return to default mode
     bindsym Return mode "default"
@@ -261,18 +264,22 @@ bindsym $mod+r mode "resize"
 # Status Bar:
 #
 # Read `man 5 sway-bar` for more information about this section.
+
 #bar {
+#
 #    position top
 #
 #    # When the status_command prints a new line to #stdout, swaybar updates.
 #    # The default just shows the current date and time.
-#    status_command while date +'%Y-%m-%d %I:%M:%S %p'; #do sleep 1; done
+#
+#    status_command while ./settingbar.py; do sleep 1; done
 #
 #    colors {
 #        statusline #ffffff
 #        background #323232
 #        inactive_workspace #32323200 #32323200 #5c5c5c
-#    }
+#   }
 #}
 
 include /home/northerblow/.config/sway/config.d/*
+
