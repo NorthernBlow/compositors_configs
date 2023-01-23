@@ -1,7 +1,7 @@
 *{
     border: none;
     border-radius: 0;
-    font-family: "monospace";
+    font-family: ui-monospace;
     font-size: 12px;
     min-height: 0px;
     margin: 0px;
@@ -26,7 +26,7 @@ window#waybar {
 }
 
 #workspaces button {
-    padding: 0 2px;
+    padding: 0 5px;
     margin: 0px;
     background: transparent;
     color: #ff8700;
@@ -35,8 +35,8 @@ window#waybar {
     color: #ffffff;
     border: 1px solid #00afd7;
     */
-    border: 1px solid #1b1d1e;
-    font-weight: bold;
+    border: 0px solid #1b1d1e;
+    font-weight: lighter;
 }
 #workspaces button:hover {
     box-shadow: inherit;
@@ -45,7 +45,7 @@ window#waybar {
 
 #workspaces button.focused {
     background: #e88939;
-    background: #00afd7;
+    background: #f686fc;
     color: #1b1d1e;
 }
 
