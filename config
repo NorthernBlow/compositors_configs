@@ -149,9 +149,10 @@ bindsym Print exec grim -g "$(slurp)" - | wl-copy
 
 
     focus_follows_mouse no
-    default_border pixel 5
+    default_border pixel 1
     hide_edge_borders smart
-    
+    client.unfocused "#333333" "#222222" "#888888"
+    client.focused "#3a3147" "#3b365e" "#ffffff"
 
 
 
