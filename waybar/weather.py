@@ -58,7 +58,26 @@ WEATHER_CODES = {
 data = {}
 
 
-weather = requests.get("https://wttr.in/?format=j1").json()
+url = "https://wttr.in/?format=j1"
+max_tries = 10
+for i in range(max_tries):
+    try:
+        weather = requests.get(url)
+    except requests.exceptions.RequestException as exc:
+        #print('Попытка номер{} провалена: {}'.format(i+1, exc))
+        time.sleep(5)
+    finally:
+        if weather.status_code == 200:
+            #print('Подключилось успешно')
+            break
+        if weather.status_code != 200:
+            #print('Попытка номер{} провалилась:{}'.format(i+1, weather.status_code))
+            time.sleep(5)
+
+
+weather = weather.json()
+
+
 
 
 def format_time(time):
@@ -103,11 +122,13 @@ match weather['current_condition'][0]['weatherDesc'][0]['value']:
     case 'Fog':
         waybar_condition = 'fog '
     case 'Freezing fog':
-        waybar_condition = 'freezing fog '
+        waybar_condition = 'white frost '
     case 'Light rain shower':
         waybar_condition = 'acid rain '
     case 'Overcast':
-        waybar_condition = 'black rainbows '
+        waybar_condition = 'sky if falling '
+    case 'Clear':
+        waybar_condition = 'perfect dark '
 
 
 data['text'] = waybar_condition + WEATHER_CODES[weather['current_condition'][0]['weatherCode']] + \
