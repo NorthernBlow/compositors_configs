@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import json
 import requests
 from datetime import datetime
@@ -86,8 +88,31 @@ def format_chances(hour):
     return ", ".join(conditions)
 
 
-data['text'] = WEATHER_CODES[weather['current_condition'][0]['weatherCode']] + \
+waybar_condition: str = ''
+
+match weather['current_condition'][0]['weatherDesc'][0]['value']:
+
+    case 'Partly cloudy':
+        waybar_condition = 'broken clouds '
+    case 'Sunny':
+        waybar_condition = 'another sky is young '
+    case 'Mist':
+        waybar_condition = 'horizon of ruin '
+    case 'Patchy rain':
+        waybar_condition = 'risk of rain '
+    case 'Fog':
+        waybar_condition = 'fog '
+    case 'Freezing fog':
+        waybar_condition = 'freezing fog '
+    case 'Light rain shower':
+        waybar_condition = 'acid rain '
+    case 'Overcast':
+        waybar_condition = 'black rainbows '
+
+
+data['text'] = waybar_condition + WEATHER_CODES[weather['current_condition'][0]['weatherCode']] + \
     " "+weather['current_condition'][0]['FeelsLikeC']+"°"
+
 
 data['tooltip'] = f"<b>{weather['current_condition'][0]['weatherDesc'][0]['value']} {weather['current_condition'][0]['temp_C']}°</b>\n"
 data['tooltip'] += f"Feels like: {weather['current_condition'][0]['FeelsLikeC']}°\n"
