@@ -3,6 +3,8 @@
 import json
 import requests
 from datetime import datetime
+import os
+import time
 
 WEATHER_CODES = {
     '113': '☀️',
@@ -57,22 +59,37 @@ WEATHER_CODES = {
 
 data = {}
 
+def check_ethernet_conn():
+    try:
+        res = requests.get("https://ya.ru", timeout=3)
+        return True
+    except requests.ConnectionError:
+        return False
+
+
 
 url = "https://wttr.in/?format=j1"
 max_tries = 10
+
+
+
+
 for i in range(max_tries):
-    try:
-        weather = requests.get(url)
-    except requests.exceptions.RequestException as exc:
-        #print('Попытка номер{} провалена: {}'.format(i+1, exc))
-        time.sleep(5)
-    finally:
-        if weather.status_code == 200:
-            #print('Подключилось успешно')
-            break
-        if weather.status_code != 200:
-            #print('Попытка номер{} провалилась:{}'.format(i+1, weather.status_code))
+    if check_ethernet_conn():
+        try:
+            weather = requests.get(url)
+        except requests.exceptions.RequestException as exc:
+            #print('Попытка номер{} провалена: {}'.format(i+1, exc))
             time.sleep(5)
+        finally:
+            if weather.status_code == 200:
+                #print('Подключилось успешно')
+                break
+            if weather.status_code != 200:
+                #print('Попытка номер{} провалилась:{}'.format(i+1, weather.status_code))
+                time.sleep(2)
+    else:
+        time.sleep(3)
 
 
 weather = weather.json()
