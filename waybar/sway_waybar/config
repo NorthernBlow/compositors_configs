@@ -1,15 +1,15 @@
 // -*- mode: json -*-
 
 {
-    "layer": "top", // Waybar at top layer
+    // "layer": "top", // Waybar at top layer
     // "position": "bottom", // Waybar position (top|bottom|left|right)
     // "height": 14, // Waybar height (to be removed for auto height)
     // "width": 1280, // Waybar width
 
     // Choose the order of the modules
-    "modules-left": ["wlr/workspaces"],
-    "modules-center": ["hyprland/window", "custom/alsa"],
-    "modules-right": ["custom/weather", "custom/disk_home", "custom/disk_root", "temperature", "cpu", "memory", "network", "pipewire", "clock", "idle_inhibitor", "tray"],
+    "modules-left": ["sway/workspaces", "sway/mode"],
+    // "modules-center": ["sway/window"],
+    "modules-right": ["custom/weather", "custom/disk_home", "custom/disk_root", "cpu", "memory", "network", "pipewire", "clock", "idle_inhibitor", "tray"],
 
     // Modules configuration
     // "sway/workspaces": {
@@ -27,32 +27,13 @@
     //      "default": ""
     //  }
     // },
-   
-
-
-    "hyprland/window": {
-    "format": "---> {}",
-    "separate-outputs": true
-},
     
-
-
-    "temperature": {
-        "thermal-zone": 2,
-	"hwmon-path": "/sys/class/hwmon/hwmon0/temp1_input",
-	"critical-threshold": 80,
-	"format-critical": "{temperatureC}°C ",
-	"format": " {temperatureC}°C"
-},
-    
-    "wlr/workspaces": {
-      "on-scroll-up": "hyprctl dispatch workspace e+1",
-      "on-scroll-down": "hyprctl dispatch workspace e-1",
-      "on-click": "activate",
+    "sway/workspaces": {
+      "disable-scroll": false,
       "all-outputs": true,
       "format": "{icon}",
-      "persistent_workspaces": {
-          "1": "хуй",
+      "format-icons": {
+          "1": "Ⅰ",
           "2": "Ⅱ",
           "3": "Ⅲ",
           "4": "Ⅳ",
@@ -67,14 +48,14 @@
       }
   },
 
-   // "sway/mode": {
-   //     "format": "{}"
-   // },
+    "sway/mode": {
+        "format": "{}"
+    },
 
     "custom/weather": {
         "format": "{}",
         "tooltip": true,
-        "interval": 600,
+        "interval": 9600,
         "exec": "python ~/.config/waybar/weather.py",
         "return-type": "json"
     },
@@ -86,15 +67,14 @@
     },
     
     "cpu": {
-        "format": "⚛ {avg_frequency}GHz",
-        "tooltip": false,
-	"on-click": "{usage}%"
+        "format": "⚛ {usage}%",
+        "tooltip": false
     },
     "memory": {
         "format": "💾 {used:0.1f}G"
     },
     "network": {
-        "family": "ipv4",
+        "family": "ipv6",
         "interface": "wlan0", // (Optional) To force the use of this interface
         "format-wifi": "<span color='#589df6'></span> <span color='gray'>{essid}</span> {frequency} <span color='#589df6'>{signaldBm} dB</span> <span color='#589df6'>⇵</span> {bandwidthUpBits}/{bandwidthDownBits}",
         "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
@@ -102,25 +82,33 @@
         "format-alt": "{ifname}: {ipaddr}/{cidr}",
         "interval": 5
     },
-    //"backlight": {
-    //    // "device": "acpi_video1",
-    //   "format": "{icon} {percent}%",
-    //    "format-icons": ["🔅", "🔆"]
-    //}, 
-    
-    "custom/alsa": {
-        "format": "  {}",
-//      "exec": "amixer get Master | sed -nre 's/.*\\[off\\].*/      \n\nmuted/p; s/.*\\[(.*%)\\].*/    \\1/p'",
-        "exec": "amixer get Master | awk -F'[][]' 'END{ print $2 }'",
-        "on-click": "amixer set Master toggle; pkill -x -RTMIN+11 waybar",
-        "on-scroll-up": "amixer set Master 190+; pkill -x -RTMIN+11 waybar",
-        "on-scroll-down": "amixer set Master 350-; pkill -x -RTMIN+11 waybar",
-        "signal": 11,
-        "interval": 10,
-        "tooltip": true
+    "backlight": {
+        // "device": "acpi_video1",
+        "format": "{icon} {percent}%",
+        "format-icons": ["🔅", "🔆"]
     },
+    // "pipewire-pulse": {
+    //     // "scroll-step": 1, // %, can be a float
+    //     "format": "{icon} {volume}% {format_source}",
+    //     "format-muted": "🔇 {format_source}",
+    //     "format-bluetooth": "{icon} {volume}% {format_source}",
+    //     "format-bluetooth-muted": "🔇 {format_source}",
 
+    //     "format-source": " {volume}%",
+    //     "format-source-muted": "",
 
+    //     "format-icons": {
+    //         "headphones": "",
+    //         "handsfree": "",
+    //         "headset": "",
+    //         "phone": "",
+    //         "portable": "",
+    //         "car": "",
+    //         "default": ["🔈", "🔉", "🔊"]
+    //     },
+    //     "on-click": "ponymix -N -t sink toggle",
+    //     "on-click-right": "ponymix -N -t source toggle"
+    // },
     "clock": {
         "interval": 1,
         "format": "⏳ {:%H:%M:%S}",

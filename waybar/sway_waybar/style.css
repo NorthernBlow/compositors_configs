@@ -43,7 +43,7 @@ window#waybar {
     text-shadow: inherit;
 }
 
-#workspaces button.active {
+#workspaces button.focused {
     background: #e88939;
     background: #f686fc;
     color: #1b1d1e;
@@ -87,12 +87,15 @@ window#waybar {
     background: #f53c3c;
 }
 
-#custom-alsa {
-    padding: 0 20 0 20;
-    margin: 2px 199px 2px 0;
+#pulseaudio {
 }
 
+#pulseaudio.muted {
+}
 
+#custom-spotify {
+    color: rgb(102, 220, 105);
+}
 
 #tray {
 }
