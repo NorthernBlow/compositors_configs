@@ -1,0 +1,21 @@
+
+format = '''
+[┌──────────ᛋᛋ─────────>](8DA399)
+[ᚠ](8DA399)$os$hostname$directory$python$package$git_branch$git_status
+[└─](8DA399) '''
+
+[python]
+symbol = 'python '
+
+
+[hostname]
+ssh_only = false
+format = '[$ssh_symbol](bold blue) on [$hostname](bold red) '
+trim_at = '.companyname.com'
+disabled = false
+
+[git_status]
+ahead = '⇡${count}'
+diverged = '⇕⇡${ahead_count}⇣${behind_count}'
+behind = '⇣${count}'
+up_to_date = '✓'
