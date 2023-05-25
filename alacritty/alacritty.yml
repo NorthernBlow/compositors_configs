@@ -26,3 +26,7 @@ colors:
     magenta: '0x888ba5'
     cyan: '0x599caa'
     white: '0xd3ebe9'
+
+window:
+      
+  opacity: 0.5

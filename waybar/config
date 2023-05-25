@@ -7,7 +7,7 @@
     // "width": 1280, // Waybar width
 
     // Choose the order of the modules
-    "modules-left": ["wlr/workspaces"],
+    "modules-left": ["custom/arch", "wlr/workspaces"],
     "modules-center": ["hyprland/window", "custom/alsa"],
     "modules-right": ["custom/weather", "custom/disk_home", "custom/disk_root", "temperature", "cpu", "memory", "network", "pipewire", "clock", "idle_inhibitor", "tray"],
 
@@ -28,14 +28,28 @@
     //  }
     // },
    
-
+"mpris": {
+	"format": "DEFAULT: {player_icon} {dynamic}",
+	"format-paused": "DEFAULT: {status_icon} <i>{dynamic}</i>",
+	"player-icons": {
+		"default": "▶",
+		"mpv": "🎵"
+	},
+	"status-icons": {
+		"paused": "⏸"
+	},
+	"ignored-players": ["telegram-desktop"]
+},
 
     "hyprland/window": {
     "format": "---> {}",
     "separate-outputs": true
 },
     
-
+	
+    "custom/arch": {
+        "format": "arch {}" 	
+},
 
     "temperature": {
         "thermal-zone": 2,
@@ -94,8 +108,8 @@
         "format": "💾 {used:0.1f}G"
     },
     "network": {
-        "family": "ipv4",
-        "interface": "wlan0", // (Optional) To force the use of this interface
+        "family": "ipv6",
+        "interface": "enp0s2f1u3", // (Optional) To force the use of this interface
         "format-wifi": "<span color='#589df6'></span> <span color='gray'>{essid}</span> {frequency} <span color='#589df6'>{signaldBm} dB</span> <span color='#589df6'>⇵</span> {bandwidthUpBits}/{bandwidthDownBits}",
         "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
         "format-linked": "{ifname} (No IP) ",

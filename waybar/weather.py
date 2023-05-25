@@ -143,9 +143,15 @@ match weather['current_condition'][0]['weatherDesc'][0]['value']:
     case 'Light rain shower':
         waybar_condition = 'acid rain '
     case 'Overcast':
-        waybar_condition = 'sky if falling '
+        waybar_condition = 'sky is falling '
     case 'Clear':
         waybar_condition = 'perfect dark '
+    case 'Light rain':
+        waybar_condition = 'filthy rain '
+    case 'Light drizzle':
+        waybar_condition = 'blind light '
+    case 'Moderate or heavy rain shower':
+        waybar_congition = 'heavy rain '
 
 
 data['text'] = waybar_condition + WEATHER_CODES[weather['current_condition'][0]['weatherCode']] + \

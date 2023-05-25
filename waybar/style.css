@@ -6,6 +6,7 @@
     min-height: 0px;
     margin: 0px;
     padding: 2px;
+    color: #98D1CE;
 }
 
 window#waybar {
@@ -45,7 +46,7 @@ window#waybar {
 
 #workspaces button.active {
     background: #e88939;
-    background: #f686fc;
+    background: #394E4D;
     color: #1b1d1e;
 }
 
