@@ -12,7 +12,7 @@ alias please='sudo'
 alias fuck='sudo !!'
 alias vpn_on='wg-quick up northernblow'
 alias vpn_off='wg-quick down northernblow'
-alias hyprland='Hyprland'
+alias hy='Hyprland'
 alias off='poweroff'
-
+alias nv='nvim'
 export DOCKER_HOST=unix:///var/run/docker.sock
