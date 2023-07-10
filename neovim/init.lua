@@ -1,67 +1,33 @@
--- line numbers by default
-vim.wo.number = true
+require "core"
 
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
+local custom_init_path = vim.api.nvim_get_runtime_file("lua/custom/init.lua", false)[1]
+
+if custom_init_path then
+  dofile(custom_init_path)
+end
+
+require("core.utils").load_mappings()
+
+local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
+
+-- bootstrap lazy.nvim!
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system { 'git', 'clone', '--filter=blob:none', 'https://github.com/folke/lazy.nvim.git', '--branch=stable', lazypath }
+  require("core.bootstrap").gen_chadrc_template()
+  require("core.bootstrap").lazy(lazypath)
 end
+
+dofile(vim.g.base46_cache .. "defaults")
 vim.opt.rtp:prepend(lazypath)
-
-
--- Add plugin
-require('lazy').setup({
-	'nvim-lualine/lualine.nvim',
-	'nvim-treesitter/nvim-treesitter',
-	'nvim-treesitter/nvim-treesitter-textobjects',
-	'neovim/nvim-lspconfig',
-	'williamboman/mason.nvim',
-	'williamboman/mason-lspconfig.nvim',
-	'WhoIsSethDaniel/mason-tool-installer.nvim',
-	
-
-}, {})
-
---Set statusbar
-require('lualine').setup {
-  options = {
-    icons_enabled = false,
-    theme = 'onedark',
-    component_separators = '|',
-    section_separators = '',
-  },
-}
-
-
-local M = {}
-
-function M.setup(servers, options)
-  local lspconfig = require "lspconfig"
-  local icons = require "config.icons"
-end
+require "plugins"
 
 
 
-require("mason-lspconfig").setup {
-    ensure_installed = vim.tbl_keys(servers),
-    automatic_installation = false,
-  }
-
-
-
---set mason plugin manager
-require("mason").setup({
-    ui = {
-        icons = {
-            package_installed = "✓",
-            package_pending = "➜",
-            package_uninstalled = "✗"
-        }
-    }
+-- автозакрытие дерева директорий
+vim.api.nvim_create_autocmd("BufEnter", {
+  nested = true,
+  callback = function()
+    if #vim.api.nvim_list_wins() == 1 and require("nvim-tree.utils").is_nvim_tree_buf() then
+      vim.cmd "quit"
+    end
+  end
 })
-
---force mason to install needed plugins ><
-require("mason-tool-installer").setup {
-  ensure_installed = { "stylua", "prettierd", "pyright" },
-  auto_update = true,
-  run_on_start = true,
-}
