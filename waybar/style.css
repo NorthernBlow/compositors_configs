@@ -93,7 +93,13 @@ window#waybar {
     margin: 2px 20px 2px 0;
 }
 
+#bluetooth {
+    padding: 0 20 0 20;
+    margin: 2px 20px 2px 0;
+    font-size: 14px;
 
+
+}
 
 #tray {
 }

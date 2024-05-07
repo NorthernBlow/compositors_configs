@@ -8,7 +8,7 @@
 
     // Choose the order of the modules
     "modules-left": ["hyprland/workspaces"],
-    "modules-center": ["hyprland/window", "custom/alsa", "custom/alsa-mic"],
+    "modules-center": ["custom/alsa", "custom/alsa-mic", "bluetooth"],
     "modules-right": ["custom/weather", "custom/disk_home", "custom/disk_root", "temperature", "cpu", "memory", "network", "pipewire", "clock", "idle_inhibitor", "tray"],
 
     // Modules configuration
@@ -119,7 +119,7 @@
     //}, 
     
     "custom/alsa": {
-        "format": "  {}",
+        "format": "   {}",
 //      "exec": "amixer get Master | sed -nre 's/.*\\[off\\].*/      \n\nmuted/p; s/.*\\[(.*%)\\].*/    \\1/p'",
         "exec": "amixer get Master | awk -F'[][]' 'END{ print $2 }'",
         "on-click": "amixer set Master toggle; pkill -x -RTMIN+11 waybar",
@@ -132,7 +132,7 @@
 
 
     "custom/alsa-mic": {
-      "format": " {}",
+      "format": "  {}",
       "exec": "amixer get Capture | sed -nre 's/.*\\[off\\].*/muted/p; s/.*\\[(.*%)\\].*/\\1/p'",
       "on-scroll-up": "amixer set Capture 10%+; pkill -x -RTMIN+11 waybar",
       "on-scroll-down": "amixer set Capture 10%-; pkill -x -RTMIN+11 waybar",
@@ -140,6 +140,21 @@
       "interval": 5,
       "tooltip": true
     },
+
+    "bluetooth": {
+	"format": " {status}",
+	"format-connected": " {device_alias}",
+	"format-connected-battery": " {device_alias} {device_battery_percentage}%",
+	// "format-device-preference": [ "device1", "device2" ], // preference list deciding the displayed device
+	"tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+	"tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+	"tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+	"tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%"
+},
+
+
+
+     
 
 
     "clock": {
