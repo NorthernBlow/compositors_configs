@@ -77,9 +77,6 @@
       }
   },
 
-   // "sway/mode": {
-   //     "format": "{}"
-   // },
 
     "custom/weather": {
         "format": "{}",
@@ -103,11 +100,11 @@
     "memory": {
         "format": "💾 {used:0.1f}G"
     },
+
     "network": {
-        "family": "ipv6",
-        "interface": "enp0s2f1u3", // (Optional) To force the use of this interface
-        "format-wifi": "<span color='#589df6'></span> <span color='gray'>{essid}</span> {frequency} <span color='#589df6'>{signaldBm} dB</span> <span color='#589df6'>⇵</span> {bandwidthUpBits}/{bandwidthDownBits}",
-        "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
+        "format-ethernet": "{bandwidthDownBytes}",
+        //"format-wifi":   {essid} ",
+        //"format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
         "format-linked": "{ifname} (No IP) ",
         "format-alt": "{ifname}: {ipaddr}/{cidr}",
         "interval": 5
