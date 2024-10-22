@@ -9,7 +9,7 @@
     color: #98D1CE;
 }
 
-#waybar {
+window#waybar {
     /*background: #000000;*/
     /*background: rgba(0, 0, 0, 0.7);*/
     background: transparent;
@@ -75,7 +75,9 @@
 #mode,
 #custom-weather,
 #custom-disk_home,
-#temperature {
+#temperature,
+#custom-load_avg
+{
     border-radius: 10px;
     background-color: #11111b;
     color: #cdd6f4;

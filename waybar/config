@@ -9,7 +9,7 @@
     // Choose the order of the modules
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["custom/alsa", "custom/alsa-mic", "bluetooth"],
-    "modules-right": ["custom/weather", "custom/disk_home", "custom/disk_root", "temperature", "cpu", "memory", "network", "pipewire", "clock", "tray"],
+    "modules-right": ["custom/load_avg", "custom/weather", "custom/disk_home", "custom/disk_root", "temperature", "cpu", "memory", "network", "pipewire", "clock", "tray"],
 
     // Modules configuration
     // "sway/workspaces": {
@@ -75,6 +75,14 @@
           "focused": "",
           "default": ""
       }
+  },
+
+    
+
+  "custom/load_avg": {
+    "exec": "python ~/.config/waybar/la.py",
+    "interval": 10,
+    "return-type": "json"
   },
 
 
