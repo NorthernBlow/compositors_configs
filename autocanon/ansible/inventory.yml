@@ -1,0 +1,9 @@
+all:
+  hosts:
+    hyprland_vm:
+      ansible_host: "{{ vm_ip | default('192.168.100.100') }}"
+      ansible_user: arch
+      ansible_ssh_private_key_file: ~/.ssh/id_rsa
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
