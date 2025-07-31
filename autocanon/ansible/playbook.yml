@@ -1,0 +1,115 @@
+---
+- name: Deploy Hyprland Configuration
+  hosts: hyprland_vm
+  become: yes
+  vars:
+    user_home: "/home/{{ ansible_user }}"
+    config_dir: "{{ user_home }}/.config"
+    repo_root: "{{ playbook_dir }}/../../"
+
+  tasks:
+    - name: Update system and install base packages
+      pacman:
+        update_cache: yes
+        name:
+          - base-devel
+          - git
+          - python
+          - python-pip
+        state: present
+
+    - name: Install Hyprland and WM dependencies
+      pacman:
+        name:
+          - hyprland
+          - waybar
+          - neovim
+          - python-requests
+          - ttf-jetbrains-mono
+          - noto-fonts
+          - noto-fonts-emoji
+        state: present
+
+    - name: Create config directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0755'
+      loop:
+        - "{{ config_dir }}"
+        - "{{ config_dir }}/waybar"
+        - "{{ config_dir }}/nvim"
+        - "{{ config_dir }}/gtk-3.0"
+
+    - name: Deploy Waybar configs
+      synchronize:
+        src: "{{ repo_root }}/waybar/"
+        dest: "{{ config_dir }}/waybar/"
+        delete: yes
+        rsync_opts:
+          - "--exclude=*.pyc"
+          - "--exclude=__pycache__"
+      become_user: "{{ ansible_user }}"
+
+    - name: Deploy Neovim configs
+      synchronize:
+        src: "{{ repo_root }}/neovim/"
+        dest: "{{ config_dir }}/nvim/"
+        delete: yes
+      become_user: "{{ ansible_user }}"
+
+    - name: Deploy GTK configs
+      synchronize:
+        src: "{{ repo_root }}/gtk-3.0/"
+        dest: "{{ config_dir }}/gtk-3.0/"
+        delete: yes
+      become_user: "{{ ansible_user }}"
+
+    - name: Deploy bashrc
+      copy:
+        src: "{{ repo_root }}/.bashrc"
+        dest: "{{ user_home }}/.bashrc"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0644'
+
+    - name: Fix weather.py typo (waybar_congition -> waybar_condition)
+      replace:
+        path: "{{ config_dir }}/waybar/weather.py"
+        regexp: 'waybar_congition'
+        replace: 'waybar_condition'
+
+    - name: Make Python scripts executable
+      file:
+        path: "{{ item }}"
+        mode: '0755'
+      loop:
+        - "{{ config_dir }}/waybar/weather.py"
+        - "{{ config_dir }}/waybar/la.py"
+
+    - name: Compile VPN checker
+      shell: |
+        cd {{ config_dir }}/waybar
+        g++ -o vpn vpn.cpp
+      become_user: "{{ ansible_user }}"
+
+    - name: Create systemd user directory
+      file:
+        path: "{{ user_home }}/.config/systemd/user"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0755'
+
+    - name: Install Hyprland session
+      copy:
+        content: |
+          [Desktop Entry]
+          Name=Hyprland
+          Comment=An intelligent dynamic tiling Wayland compositor
+          Exec=Hyprland
+          Type=Application
+        dest: /usr/share/wayland-sessions/hyprland.desktop
+        mode: '0644'
