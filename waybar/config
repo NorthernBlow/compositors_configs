@@ -10,7 +10,9 @@
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["custom/alsa", "custom/alsa-mic", "bluetooth"],
     "modules-right": ["custom/load_avg", "custom/weather", "custom/disk_home", "custom/disk_root", "temperature", "cpu", "memory", "network", "pipewire", "clock", "tray"],
-
+    "output": ["HDMI-A-1"],
+    "mode": "dock",
+    "hidden": false,
     // Modules configuration
     // "sway/workspaces": {
     //  "disable-scroll": true,
