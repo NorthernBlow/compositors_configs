@@ -3,172 +3,94 @@
 import json
 import requests
 from datetime import datetime
-import time
 
-# Nerd Font weather icons (nf-weather-*)
-WEATHER_CODES = {
-    '113': '',   # sunny/clear
-    '116': '',   # partly cloudy
-    '119': '',   # cloudy
-    '122': '',   # overcast
-    '143': '',   # fog
-    '176': '',   # rain
-    '179': '',   # sleet
-    '182': '',   # sleet
-    '185': '',   # sleet
-    '200': '',   # thunderstorm
-    '227': '',   # snow
-    '230': '',   # snow heavy
-    '248': '',   # fog
-    '260': '',   # fog
-    '263': '',   # light rain
-    '266': '',   # light rain
-    '281': '',   # sleet
-    '284': '',   # sleet
-    '293': '',   # light rain
-    '296': '',   # rain
-    '299': '',   # rain
-    '302': '',   # rain heavy
-    '305': '',   # rain heavy
-    '308': '',   # rain heavy
-    '311': '',   # sleet
-    '314': '',   # sleet
-    '317': '',   # sleet
-    '320': '',   # snow
-    '323': '',   # snow
-    '326': '',   # snow
-    '329': '',   # snow heavy
-    '332': '',   # snow heavy
-    '335': '',   # snow heavy
-    '338': '',   # snow heavy
-    '350': '',   # hail
-    '353': '',   # rain
-    '356': '',   # rain heavy
-    '359': '',   # rain heavy
-    '362': '',   # sleet
-    '365': '',   # sleet
-    '368': '',   # snow
-    '371': '',   # snow heavy
-    '374': '',   # hail
-    '377': '',   # hail
-    '386': '',   # thunderstorm
-    '389': '',   # thunderstorm
-    '392': '',   # thunderstorm
-    '395': ''    # snow heavy
+# Belgorod coordinates
+LAT = 50.5958
+LON = 36.5873
+
+# WMO weather code → (nerd font icon, description, short description)
+WMO_CODES = {
+    0:  ('', 'Clear sky', 'perfect dark'),
+    1:  ('', 'Mainly clear', 'another sky is young'),
+    2:  ('', 'Partly cloudy', 'broken clouds'),
+    3:  ('', 'Overcast', 'sky is falling'),
+    45: ('', 'Fog', 'fog'),
+    48: ('', 'Freezing fog', 'white frost'),
+    51: ('', 'Light drizzle', 'blind light'),
+    53: ('', 'Moderate drizzle', 'blind light'),
+    55: ('', 'Dense drizzle', 'blind light'),
+    56: ('', 'Freezing drizzle', 'white frost'),
+    57: ('', 'Heavy freezing drizzle', 'white frost'),
+    61: ('', 'Slight rain', 'filthy rain'),
+    63: ('', 'Moderate rain', 'filthy rain'),
+    65: ('', 'Heavy rain', 'heavy rain'),
+    66: ('', 'Freezing rain', 'acid rain'),
+    67: ('', 'Heavy freezing rain', 'acid rain'),
+    71: ('', 'Slight snow', 'white silence'),
+    73: ('', 'Moderate snow', 'snow storm'),
+    75: ('', 'Heavy snow', 'snow storm'),
+    77: ('', 'Snow grains', 'white silence'),
+    80: ('', 'Slight showers', 'risk of rain'),
+    81: ('', 'Moderate showers', 'risk of rain'),
+    82: ('', 'Violent showers', 'heavy rain'),
+    85: ('', 'Snow showers', 'white silence'),
+    86: ('', 'Heavy snow showers', 'snow storm'),
+    95: ('', 'Thunderstorm', 'thunderstorm'),
+    96: ('', 'Thunderstorm w/ hail', 'thunderstorm'),
+    99: ('', 'Thunderstorm w/ heavy hail', 'thunderstorm'),
 }
+
+url = (
+    "https://api.open-meteo.com/v1/forecast"
+    f"?latitude={LAT}&longitude={LON}"
+    "&current=temperature_2m,apparent_temperature,weather_code,"
+    "wind_speed_10m,relative_humidity_2m"
+    "&daily=temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset"
+    "&timezone=Europe/Moscow&forecast_days=3"
+)
 
 data = {}
 
-def check_ethernet_conn():
-    try:
-        res = requests.get("https://ya.ru", timeout=3)
-        return True
-    except requests.ConnectionError:
-        return False
-
-url = "https://wttr.in/?format=j1"
-max_tries = 10
-
-weather = None
-for i in range(max_tries):
-    if check_ethernet_conn():
-        try:
-            weather = requests.get(url, timeout=10)
-            if weather.status_code == 200:
-                break
-        except requests.exceptions.RequestException:
-            time.sleep(5)
-    else:
-        time.sleep(3)
-
-if weather is None or weather.status_code != 200:
+try:
+    resp = requests.get(url, timeout=8)
+    resp.raise_for_status()
+    w = resp.json()
+except Exception as e:
     data['text'] = " N/A"
-    data['tooltip'] = "Weather unavailable"
+    data['tooltip'] = f"Weather unavailable: {e}"
     print(json.dumps(data))
     exit()
 
-weather = weather.json()
+cur = w['current']
+daily = w['daily']
 
-def format_time(time):
-    return time.replace("00", "").zfill(2)
+code = cur['weather_code']
+icon, desc, short = WMO_CODES.get(code, ('', 'Unknown', 'unknown'))
 
-def format_temp(temp):
-    return (temp+"°").ljust(3)
+temp = cur['temperature_2m']
+feels = cur['apparent_temperature']
+wind = cur['wind_speed_10m']
+humidity = cur['relative_humidity_2m']
 
-def format_chances(hour):
-    chances = {
-        "chanceoffog": "Fog",
-        "chanceoffrost": "Frost",
-        "chanceofovercast": "Overcast",
-        "chanceofrain": "Rain",
-        "chanceofsnow": "Snow",
-        "chanceofsunshine": "Sunshine",
-        "chanceofthunder": "Thunder",
-        "chanceofwindy": "Wind"
-    }
-    conditions = []
-    for event in chances.keys():
-        if int(hour[event]) > 0:
-            conditions.append(chances[event]+" "+hour[event]+"%")
-    return ", ".join(conditions)
+data['text'] = f"{short} {icon} {feels:.0f}°"
 
-waybar_condition = ''
-match weather['current_condition'][0]['weatherDesc'][0]['value']:
-    case 'Partly cloudy':
-        waybar_condition = 'broken clouds '
-    case 'Sunny':
-        waybar_condition = 'another sky is young '
-    case 'Mist':
-        waybar_condition = 'horizon of ruin '
-    case 'Patchy rain' | 'Patchy rain possible':
-        waybar_condition = 'risk of rain '
-    case 'Fog':
-        waybar_condition = 'fog '
-    case 'Freezing fog':
-        waybar_condition = 'white frost '
-    case 'Light rain shower':
-        waybar_condition = 'acid rain '
-    case 'Overcast':
-        waybar_condition = 'sky is falling '
-    case 'Clear':
-        waybar_condition = 'perfect dark '
-    case 'Light rain':
-        waybar_condition = 'filthy rain '
-    case 'Light drizzle':
-        waybar_condition = 'blind light '
-    case 'Moderate or heavy rain shower':
-        waybar_condition = 'heavy rain '
-    case 'Light snow' | 'Patchy light snow':
-        waybar_condition = 'white silence '
-    case 'Moderate snow' | 'Heavy snow':
-        waybar_condition = 'snow storm '
-    case _:
-        waybar_condition = weather['current_condition'][0]['weatherDesc'][0]['value'].lower() + ' '
+tooltip = f"<b>{desc} {temp:.0f}°</b>\n"
+tooltip += f"Feels like: {feels:.0f}°\n"
+tooltip += f"Wind: {wind:.0f} km/h\n"
+tooltip += f"Humidity: {humidity:.0f}%\n"
 
-weather_code = weather['current_condition'][0]['weatherCode']
-icon = WEATHER_CODES.get(weather_code, '')
+day_names = ['Today', 'Tomorrow', 'Day after']
+for i in range(len(daily['time'])):
+    d_code = daily['weather_code'][i]
+    d_icon, d_desc, _ = WMO_CODES.get(d_code, ('', 'Unknown', ''))
+    tmax = daily['temperature_2m_max'][i]
+    tmin = daily['temperature_2m_min'][i]
+    sunrise = daily['sunrise'][i][11:]  # HH:MM
+    sunset = daily['sunset'][i][11:]
+    label = day_names[i] if i < len(day_names) else daily['time'][i]
+    tooltip += f"\n<b>{label}, {daily['time'][i]}</b>\n"
+    tooltip += f" {tmax:.0f}°   {tmin:.0f}°   {d_icon} {d_desc}\n"
+    tooltip += f"  {sunrise}   {sunset}\n"
 
-data['text'] = waybar_condition + icon + " " + weather['current_condition'][0]['FeelsLikeC'] + "°"
-
-data['tooltip'] = f"<b>{weather['current_condition'][0]['weatherDesc'][0]['value']} {weather['current_condition'][0]['temp_C']}°</b>\n"
-data['tooltip'] += f"Feels like: {weather['current_condition'][0]['FeelsLikeC']}°\n"
-data['tooltip'] += f"Wind: {weather['current_condition'][0]['windspeedKmph']}Km/h\n"
-data['tooltip'] += f"Humidity: {weather['current_condition'][0]['humidity']}%\n"
-
-for i, day in enumerate(weather['weather']):
-    data['tooltip'] += f"\n<b>"
-    if i == 0:
-        data['tooltip'] += "Today, "
-    if i == 1:
-        data['tooltip'] += "Tomorrow, "
-    data['tooltip'] += f"{day['date']}</b>\n"
-    data['tooltip'] += f" {day['maxtempC']}°  {day['mintempC']}° "
-    data['tooltip'] += f" {day['astronomy'][0]['sunrise']}  {day['astronomy'][0]['sunset']}\n"
-    for hour in day['hourly']:
-        if i == 0:
-            if int(format_time(hour['time'])) < datetime.now().hour - 2:
-                continue
-        hour_icon = WEATHER_CODES.get(hour['weatherCode'], '')
-        data['tooltip'] += f"{format_time(hour['time'])} {hour_icon} {format_temp(hour['FeelsLikeC'])} {hour['weatherDesc'][0]['value']}, {format_chances(hour)}\n"
-
+data['tooltip'] = tooltip
 print(json.dumps(data))

@@ -5,9 +5,9 @@
     "output": ["HDMI-A-1"],
     "mode": "dock",
     "hidden": false,
-    "modules-left": ["hyprland/workspaces"],
-    "modules-center": ["custom/alsa", "custom/alsa-mic", "bluetooth"],
-    "modules-right": ["custom/load_avg", "custom/weather", "custom/disk_home", "temperature", "cpu", "memory", "network", "clock", "tray"],
+    "modules-left": ["hyprland/workspaces", "mpris"],
+    "modules-center": ["custom/weather", "custom/alsa", "custom/alsa-mic", "bluetooth"],
+    "modules-right": ["custom/load_avg", "custom/disk_home", "temperature", "cpu", "memory", "network", "clock", "tray"],
 
     "hyprland/workspaces": {
       "on-scroll-up": "hyprctl dispatch workspace e+1",
@@ -16,16 +16,41 @@
       "all-outputs": true,
       "format": "{icon}",
       "persistent_workspaces": {
-          "1": "1",
-          "2": "Ⅱ",
-          "3": "Ⅲ",
-          "4": "Ⅳ",
-          "5": "Ⅴ",
-          "6": "Ⅵ",
-          "7": "Ⅶ",
-          "8": "Ⅷ",
-          "9": "Ⅸ"
+          "1": [],
+          "2": [],
+          "3": [],
+          "4": [],
+          "5": [],
+          "6": [],
+          "7": [],
+          "8": [],
+          "9": []
       }
+    },
+
+    "mpris": {
+        "format": "{player_icon} {dynamic}",
+        "format-paused": "{status_icon} {dynamic}",
+        "dynamic-order": ["title", "artist"],
+        "dynamic-len": 35,
+        "player-icons": {
+            "default": "▶",
+            "firefox": "󰈹",
+            "chromium": "󰊯",
+            "spotify": "󰓇",
+            "mpd": "󰎆",
+            "vlc": "󰕼"
+        },
+        "status-icons": {
+            "paused": "⏸",
+            "playing": "▶",
+            "stopped": "⏹"
+        },
+        "on-click": "playerctl play-pause",
+        "on-click-right": "playerctl next",
+        "on-click-middle": "playerctl previous",
+        "tooltip": true,
+        "tooltip-format": "{player}: {title}\n{artist}\n{album}"
     },
 
     "custom/load_avg": {
@@ -87,7 +112,7 @@
 
     "custom/alsa-mic": {
         "format": "󰍬 {}",
-        "exec": "amixer get Capture | sed -nre 's/.*\\[off\\].*/muted/p; s/.*\\[(.*%)\\].*/\\1/p'",
+        "exec": "amixer get Capture | sed -nre 's/.*\\[off\\].*/muted/p; s/.*\\[(.*)%\\].*/\\1%/p'",
         "on-scroll-up": "amixer set Capture 10%+; pkill -x -RTMIN+11 waybar",
         "on-scroll-down": "amixer set Capture 10%-; pkill -x -RTMIN+11 waybar",
         "signal": 11,
